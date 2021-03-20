@@ -27,3 +27,14 @@ series = {SUMAC'20}
 #### Mar 20, 2021
 - [x] Commit the codes of rasterization using OpenCV
 - [x] Commit the codes of ALPS scores reimplemented from SpaceNet competitions
+
+-------------
+# Usage Guide
+
+## ALPS scores
+The Python ALPS scores from [CosmiQ](https://github.com/CosmiQ/apls) does not work well. We decide that we port the Java implementation from SpaceNet competitions website into the following repo:
+```
+https://github.com/antran89/road_visualizer
+```
+
+## Rasterization of OSM data into pseudo (noisy) ground truth image
