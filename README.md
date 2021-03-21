@@ -38,3 +38,39 @@ https://github.com/antran89/road_visualizer
 ```
 
 ## Rasterization of OSM data into pseudo (noisy) ground truth image
+
+The code to rasterize OSM road networks into images using OpenCV simple like this. For more use cases, please consult the attached notebook.
+
+```
+def rasterize_osm_using_opencv(input_path, osm_out_folder):
+    """Rasterize OSM road network using opencv, and write it to the result folder.
+
+    Parameters
+    ----------
+    input_image: string
+        Jpg input image
+    osm_out_folder : string
+        OSM output folder
+
+    Returns
+    -------
+    None
+    """
+    img_name = os.path.basename(input_path)
+    out_file_name = '%s_mask.png' % (img_name[:-8])
+    out_file = os.path.join(osm_out_folder, out_file_name)
+    if os.path.exists(out_file):
+        return
+    left, top = get_lon_lat_from_image_name(img_name, transform_folder)
+    right, bottom = get_lon_lat_from_image_name(img_name, transform_folder, r=1024, c=1024)
+    epsilon = 1e-3
+    try:
+        G = ox.graph_from_bbox(north=top+epsilon, south=bottom-epsilon, west=left-epsilon, east=right+epsilon, network_type='all_private',
+                    simplify=False, retain_all=True, truncate_by_edge=False)
+    except ox.EmptyOverpassResponse:
+        cv2.imwrite(out_file, np.zeros((1024, 1024)))
+        return
+    mask = rasterize_osm_road_network(img_name, G, num_lanes_profile, lane_width=8)
+    cv2.imwrite(out_file, mask)
+    return
+```
